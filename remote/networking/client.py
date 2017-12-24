@@ -1,4 +1,7 @@
 import socket
+from functools import partial
+
+from kivy.clock import Clock
 
 
 class TCPRemoteClient(object):
@@ -20,6 +23,9 @@ class TCPRemoteClient(object):
             self.is_alive = True
 
     def transfer(self, data, flags=None):
+        Clock.schedule_once(partial(self._transfer, data, flags))
+
+    def _transfer(self, data, flags=None):
         if not self.is_alive:
             raise ConnectionError
         self.connection.send(data, flags=flags)
